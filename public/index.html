@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Proxies BR - Download TXT</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    #proxyTable {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 20px;
+      display: none;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background: #f8f8f8;
+    }
+    button, a.button {
+      padding: 10px 15px;
+      margin-right: 10px;
+      text-decoration: none;
+      background: #007bff;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover, a.button:hover {
+      opacity: 0.9;
+    }
+  </style>
+</head>
+<body>
+  <h1>Lista de Proxies do Brasil (HTTPS/SOCKS4)</h1>
+  <button id="btnAtualizar">Atualizar Proxies</button>
+  <a class="button" href="/download" download="proxies.txt">Baixar TXT</a>
+  <p id="status"></p>
+
+  <table id="proxyTable">
+    <thead>
+      <tr>
+        <th>IP</th>
+        <th>Porta</th>
+        <th>Protocolo</th>
+        <th>Origem</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+  
+  <script>
+    const btnAtualizar = document.getElementById("btnAtualizar");
+    const statusEl = document.getElementById("status");
+    const proxyTable = document.getElementById("proxyTable");
+    const tbody = proxyTable.querySelector("tbody");
+
+    btnAtualizar.addEventListener("click", async () => {
+      statusEl.textContent = "Carregando proxies...";
+      proxyTable.style.display = "none";
+      tbody.innerHTML = "";
+
+      try {
+        const response = await fetch("/proxies");
+        if (!response.ok) throw new Error("Erro ao buscar proxies");
+        const data = await response.json();
+        
+        statusEl.textContent = `Foram encontrados ${data.count} proxies.`;
+        if (data.count > 0) {
+          proxyTable.style.display = "table";
+          data.proxies.forEach(proxy => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+              <td>${proxy.ip}</td>
+              <td>${proxy.port}</td>
+              <td>${proxy.protocol}</td>
+              <td>${proxy.source}</td>
+            `;
+            tbody.appendChild(row);
+          });
+        }
+      } catch (err) {
+        console.error(err);
+        statusEl.textContent = "Erro ao carregar proxies.";
+      }
+    });
+  </script>
+</body>
+</html>

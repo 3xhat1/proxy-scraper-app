@@ -1,0 +1,15 @@
+{
+    "name": "scraping-proxies-front",
+    "version": "1.0.0",
+    "description": "Scraping de proxies brasileiros com front-end e botão para download TXT",
+    "main": "server.js",
+    "scripts": {
+      "start": "node server.js"
+    },
+    "dependencies": {
+      "axios": "^1.3.0",
+      "cheerio": "^1.0.0-rc.12",
+      "express": "^4.18.2"
+    }
+  }
+  
